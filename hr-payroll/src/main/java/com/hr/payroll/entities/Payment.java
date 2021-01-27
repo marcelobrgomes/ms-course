@@ -1,4 +1,4 @@
-package com.hr.entities;
+package com.hr.payroll.entities;
 
 import java.io.Serializable;
 
