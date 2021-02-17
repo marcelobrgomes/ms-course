@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hr.payroll.entities.Payment;
 import com.hr.payroll.services.PaymentService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/payments")
@@ -17,8 +18,14 @@ public class PaymentResource {
 	@Autowired
 	private PaymentService paymentService;
 	
+	@HystrixCommand(fallbackMethod = "getPaymentAlternative")
 	@GetMapping("/{workerId}/days/{days}")
 	public ResponseEntity<Payment> getPayment(@PathVariable long workerId, @PathVariable Integer days) {
 		return ResponseEntity.ok(paymentService.getPayment(workerId, days));
+	}
+	
+	public ResponseEntity<Payment> getPaymentAlternative(long workerId, Integer days) {
+		Payment payment = new Payment("Fulano", 400.00, days);
+		return ResponseEntity.ok(payment);
 	}
 }
