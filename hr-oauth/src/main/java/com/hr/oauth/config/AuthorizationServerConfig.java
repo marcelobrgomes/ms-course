@@ -12,6 +12,10 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+/**
+ * Configura o projeto como um Authorization Server
+ *
+ */
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -36,13 +40,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
+			//Enviados no header da requisição
 			.withClient("myappname123") //clientId
 			.secret(passwordEncoder.encode("myappsecret123")) //clientSecret
-			.scopes("read", "write")
 			.authorizedGrantTypes("password")
+			
+			.scopes("read", "write")
 			.accessTokenValiditySeconds(86400);
 	}
 
+	//Configura o authenticationManager, tokenStore e tokenConverter com os beans criados nas classes de configuração
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.authenticationManager(authenticationManager)
